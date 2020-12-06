@@ -1,8 +1,9 @@
 #include "Game.h"
+#include <iostream>
 
 Game::Game()
 {
-	this->init("Title", 800, 600, false);
+	this->init("Game", 800, 600);
 }
 
 Game::~Game()
@@ -10,10 +11,25 @@ Game::~Game()
 	delete this->window;
 }
 
-void Game::init(const char* title, int width, int height, bool fullscreen)
+void Game::init(const char* title, int width, int height)
 {
-	this->window = nullptr;
-	this->window = new sf::RenderWindow(sf::VideoMode(width, height), title);
+	this->window = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Close);
+}
+
+void Game::run()
+{
+	while (this->isRunning)
+	{
+		this->handleEvents();
+		this->updateDt();
+		this->update();
+		this->render();
+	}
+}
+
+void Game::close()
+{
+	this->isRunning = false;
 }
 
 void Game::handleEvents()
@@ -23,37 +39,35 @@ void Game::handleEvents()
 		switch (evnt.type)
 		{
 		case sf::Event::Closed:
-			this->window->close();
+			this->close();
 			break;
 
 		case sf::Event::KeyPressed:
 			if (evnt.key.code == sf::Keyboard::Escape)
-				this->window->close();
+				this->close();
 			break;
 		}
 	}
 }
 
+// Update delta time
+void Game::updateDt()
+{
+	this->dt = this->dtClock.restart().asSeconds();
+}
+
 void Game::update()
 {
-
+	// Update FPS
+	int fps = 1.f / this->dt;
+	this->window->setTitle(std::to_string(fps));
 }
 
 void Game::render()
 {
 	this->window->clear(sf::Color(0, 0, 255));
 
-	// render
+	// Render
 
 	this->window->display();
-}
-
-void Game::clean()
-{
-
-}
-
-bool Game::running()
-{
-	return isRunning;
 }
