@@ -6,12 +6,5 @@ int main()
 {
 	// ShowWindow(GetConsoleWindow(), SW_HIDE);
 	Game game;
-
-	while (game.running())
-	{
-		game.handleEvents();
-		//game.update();
-		game.render();
-		//game.clean();
-	}
+	game.run();
 }
