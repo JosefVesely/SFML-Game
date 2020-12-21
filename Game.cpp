@@ -1,27 +1,29 @@
 #include "Game.h"
 #include <iostream>
 
-Game::Game()
-{
-	this->init("Game", 800, 600);
-}
-
 Game::~Game()
 {
 	delete this->window;
 }
 
-void Game::init(const char* title, int width, int height)
+void Game::init(const char* title, int width, int height, bool maximize = false)
 {
-	this->window = new sf::RenderWindow(sf::VideoMode(width, height), title, sf::Style::Close);
+	this->title = title;
+	this->videoMode.width = width;
+	this->videoMode.height = height;
+
+	int style = maximize ? sf::Style::Default : sf::Style::Close;
+
+	this->window = new sf::RenderWindow(this->videoMode, this->title, style);
 }
 
 void Game::run()
 {
-	while (this->isRunning)
+	this->init("Game", 960, 540, false);
+
+	while (this->running)
 	{
 		this->handleEvents();
-		this->updateDt();
 		this->update();
 		this->render();
 	}
@@ -29,7 +31,8 @@ void Game::run()
 
 void Game::close()
 {
-	this->isRunning = false;
+	this->window->close();
+	this->running = false;
 }
 
 void Game::handleEvents()
@@ -41,16 +44,10 @@ void Game::handleEvents()
 		case sf::Event::Closed:
 			this->close();
 			break;
-
-		case sf::Event::KeyPressed:
-			if (evnt.key.code == sf::Keyboard::Escape)
-				this->close();
-			break;
 		}
 	}
 }
 
-// Update delta time
 void Game::updateDt()
 {
 	this->dt = this->dtClock.restart().asSeconds();
@@ -58,9 +55,14 @@ void Game::updateDt()
 
 void Game::update()
 {
+	this->updateDt();
+
 	// Update FPS
-	int fps = 1.f / this->dt;
-	this->window->setTitle(std::to_string(fps));
+	int fps = 1 / this->dt;
+	std::string title = this->title + " FPS: " + std::to_string(fps);
+	this->window->setTitle(title);
+
+	// Update
 }
 
 void Game::render()
