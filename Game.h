@@ -1,27 +1,30 @@
 #pragma once
+
 #include <SFML/Graphics.hpp>
+#include <string>
 
 class Game
 {
 public:
-	Game();
 	~Game();
 
-	void init(const char* title, int width, int height);
+	void init(const char* title, int width, int height, bool maximize);
 	void run();
 	void close();
 
 	void handleEvents();
-	void updateDt();
 	void update();
+	void updateDt();
 	void render();
 
 private:
-	bool isRunning = true;
+	bool running = true;
+	std::string title;
 
 	sf::RenderWindow* window;
-	sf::Event evnt;
+	sf::VideoMode videoMode;
 
+	sf::Event evnt;
 	sf::Clock dtClock;
-	float dt;
+	float dt; // Delta time
 };
