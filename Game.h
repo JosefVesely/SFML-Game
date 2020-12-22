@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include "Player.h"
 #include <string>
 
 class Game
@@ -18,8 +19,10 @@ public:
 	void render();
 
 private:
-	bool running = true;
+	bool running;
 	std::string title;
+
+	Player player;
 
 	sf::RenderWindow* window;
 	sf::VideoMode videoMode;

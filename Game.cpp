@@ -1,5 +1,5 @@
 #include "Game.h"
-#include <iostream>
+#include "Player.h"
 
 Game::~Game()
 {
@@ -12,14 +12,17 @@ void Game::init(const char* title, int width, int height, bool maximize = false)
 	this->videoMode.width = width;
 	this->videoMode.height = height;
 
-	int style = maximize ? sf::Style::Default : sf::Style::Close;
+	this->running = true;
 
+	int style = maximize ? sf::Style::Default : sf::Style::Close;
 	this->window = new sf::RenderWindow(this->videoMode, this->title, style);
 }
 
 void Game::run()
 {
-	this->init("Game", 960, 540, false);
+	this->init("Game", 960, 540);
+
+	player.setPosition(128, 64);
 
 	while (this->running)
 	{
@@ -70,6 +73,7 @@ void Game::render()
 	this->window->clear(sf::Color(0, 0, 255));
 
 	// Render
+	player.render(*this->window);
 
 	this->window->display();
 }
