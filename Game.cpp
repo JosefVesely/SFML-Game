@@ -1,5 +1,6 @@
 #include "Game.h"
-#include "Player.h"
+#include "Entity.h"
+#include <iostream>
 
 Game::~Game()
 {
@@ -14,15 +15,18 @@ void Game::init(const char* title, int width, int height, bool maximize = false)
 
 	this->running = true;
 
-	int style = maximize ? sf::Style::Default : sf::Style::Close;
+	char style = maximize ? sf::Style::Default : sf::Style::Close;
 	this->window = new sf::RenderWindow(this->videoMode, this->title, style);
+
+	this->window->setFramerateLimit(60);
 }
 
 void Game::run()
 {
 	this->init("Game", 960, 540);
 
-	player.setPosition(128, 64);
+	player.setPosition(512, 256);
+	player.speed = 256.f;
 
 	while (this->running)
 	{
@@ -42,18 +46,21 @@ void Game::handleEvents()
 {
 	while (this->window->pollEvent(this->evnt))
 	{
-		switch (evnt.type)
+		switch (this->evnt.type)
 		{
 		case sf::Event::Closed:
 			this->close();
 			break;
 		}
 	}
+
+	player.handleEvents(this->dt);
 }
 
 void Game::updateDt()
 {
 	this->dt = this->dtClock.restart().asSeconds();
+	std::cout << this->dt << std::endl;
 }
 
 void Game::update()

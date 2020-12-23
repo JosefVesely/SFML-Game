@@ -9,15 +9,17 @@ public:
 
 	void update();
 	virtual void render(sf::RenderWindow& window) = 0;
+	virtual void handleEvents(float dt) = 0;
 
+	void move(int distX, int distY);
+	void moveX(int distX);
+	void moveY(int distY);
+	
 	void setPosition(int x, int y);
-	void moveX(int distance);
-	void moveY(int distance);
-	void setHealth(int health);
 
-private:
+//private:
 	int x, y;
-	int speed;
+	float speed;
 	int angle;
 	int health;
 	bool crouching;

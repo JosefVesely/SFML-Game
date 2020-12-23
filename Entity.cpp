@@ -18,22 +18,24 @@ void Entity::render(sf::RenderWindow& window)
 	window.draw(rect);
 }
 
+void Entity::handleEvents(float dt) {}
+
 void Entity::setPosition(int x, int y)
 {
 	this->x = x; this->y = y;
 }
 
-void Entity::moveX(int distance)
+void Entity::move(int distX, int distY)
 {
-	this->x += distance;
+	this->x += distX; this->y += distY;
 }
 
-void Entity::moveY(int distance)
+void Entity::moveX(int dist)
 {
-	this->y += distance;
+	this->x += dist;
 }
 
-void Entity::setHealth(int health)
+void Entity::moveY(int dist)
 {
-	this->health = health;
+	this->y += dist;
 }
