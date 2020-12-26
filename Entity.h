@@ -14,11 +14,19 @@ public:
 	void move(int distX, int distY);
 	void moveX(int distX);
 	void moveY(int distY);
-	
-	void setPosition(int x, int y);
 
-//private:
+	// Getters
+	int getX();
+	int getY();
+
+	// Setters	
+	void setPosition(int x, int y);
+	void setSpeed(float speed);
+
+protected:
 	int x, y;
+	int xCenter, yCenter;
+	int width, height;
 	float speed;
 	int angle;
 	int health;

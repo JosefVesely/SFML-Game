@@ -1,32 +1,42 @@
+#include <SFML/Graphics.hpp>
+
 #include "Game.h"
 #include "Entity.h"
-#include <iostream>
 
 Game::~Game()
 {
 	delete this->window;
 }
 
-void Game::init(const char* title, int width, int height, bool maximize = false)
+void Game::initWindow(const char* title, int width, int height, bool maximize)
 {
 	this->title = title;
 	this->videoMode.width = width;
 	this->videoMode.height = height;
 
-	this->running = true;
-
+	// Create window
 	char style = maximize ? sf::Style::Default : sf::Style::Close;
 	this->window = new sf::RenderWindow(this->videoMode, this->title, style);
-
 	this->window->setFramerateLimit(60);
+
+	// Set window icon
+	sf::Image icon;
+	icon.loadFromFile("assets/icon.png");
+	this->window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+}
+
+void Game::init()
+{
+	this->running = true;
+	this->initWindow("Game", 960, 540, false);
 }
 
 void Game::run()
 {
-	this->init("Game", 960, 540);
+	this->init();
 
 	player.setPosition(512, 256);
-	player.speed = 256.f;
+	player.setSpeed(314.f);
 
 	while (this->running)
 	{
@@ -60,7 +70,6 @@ void Game::handleEvents()
 void Game::updateDt()
 {
 	this->dt = this->dtClock.restart().asSeconds();
-	std::cout << this->dt << std::endl;
 }
 
 void Game::update()
@@ -73,6 +82,7 @@ void Game::update()
 	this->window->setTitle(title);
 
 	// Update
+	player.update(sf::Mouse::getPosition(*this->window));
 }
 
 void Game::render()

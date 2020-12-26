@@ -1,15 +1,17 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Player.h"
 #include <string>
+
+#include "Player.h"
 
 class Game
 {
 public:
 	~Game();
 
-	void init(const char* title, int width, int height, bool maximize);
+	void initWindow(const char* title, int width, int height, bool maximize = false);
+	void init();
 	void run();
 	void close();
 
