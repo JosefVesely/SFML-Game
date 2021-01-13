@@ -1,7 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#define _USE_MATH_DEFINES
-#include <math.h> // atan2, M_PI
+#include "math.h"
 
 #include "Entity.h"
 #include "Player.h"
@@ -17,16 +16,15 @@ void Player::update(sf::Vector2i mousePos)
 	xCenter = this->x + this->width / 2;
 	yCenter = this->y + this->height / 2;
 
-	std::cout << "Angle: " << getAngle(mousePos) << '\n';
+	this->angle = this->getAngle(mousePos);
 }
 
 int Player::getAngle(sf::Vector2i mousePos)
 {
-	// angle - int in range from -179 to 179
 	int deltaX = (this->x + this->width / 2) - mousePos.x;  // x2 - x1
 	int deltaY = (this->y + this->height / 2) - mousePos.y; // y2 - y1
 
-	return atan2(deltaY, deltaX) * 180 / M_PI; // convert angle from radians to degrees
+	return math::toDegrees(math::atan2(deltaY, deltaX));
 }
 
 void Player::render(sf::RenderWindow& window)
@@ -34,10 +32,14 @@ void Player::render(sf::RenderWindow& window)
 	// Rectangle
 	sf::RectangleShape rect;
 	rect.setSize(sf::Vector2f(this->width, this->height));
-	rect.setFillColor(sf::Color::Red);
+	rect.setFillColor(sf::Color(255, 50, 150));
 	rect.setPosition(this->x, this->y);
+	
+	// Rotate rectangle
+	sf::Transform transform;
+	transform.rotate(this->angle, { static_cast<float>(xCenter), static_cast<float>(yCenter) });
 
-	window.draw(rect);
+	window.draw(rect, transform);
 
 	// Line from player to mouse
 	sf::Vertex line[] =
@@ -46,6 +48,32 @@ void Player::render(sf::RenderWindow& window)
 		sf::Vertex(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)))
 	};
 	window.draw(line, 2, sf::Lines);
+
+	// TODO: Create health bar object
+	// Render health bar
+	int hb_x = 16;
+	int hb_y = 16;
+	int hb_tilt = 24;
+	int hb_width = 256;
+	int hb_height = 24;
+
+	sf::ConvexShape hb;
+	hb.setPosition(0, 0);
+	hb.setFillColor(sf::Color(255, 0, 0));
+	hb.setPointCount(4);
+	hb.setPoint(0, sf::Vector2f(hb_x + hb_tilt,			   hb_y            ));
+	hb.setPoint(1, sf::Vector2f(hb_y + hb_width + hb_tilt, hb_x            ));
+	hb.setPoint(2, sf::Vector2f(hb_y + hb_width,		   hb_x + hb_height));
+	hb.setPoint(3, sf::Vector2f(hb_x,					   hb_y + hb_height));
+	window.draw(hb);
+
+	if (this->health > 0)
+	{
+		hb.setFillColor(sf::Color(0, 255, 0));
+		hb.setPoint(1, sf::Vector2f(this->health * (hb_width / 100.f) + hb_y + hb_tilt, hb_x			));
+		hb.setPoint(2, sf::Vector2f(this->health * (hb_width / 100.f) + hb_y,           hb_x + hb_height));
+		window.draw(hb);
+	}
 }
 
 void Player::handleEvents(float dt)
@@ -66,5 +94,13 @@ void Player::handleEvents(float dt)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 	{
 		this->moveX(dt * this->speed);
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+	{
+		this->health--;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+	{
+		this->setHealth(100);
 	}
 }
