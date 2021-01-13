@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "math.h"
+#include "Math.h"
 
 #include "Entity.h"
 #include "Player.h"
